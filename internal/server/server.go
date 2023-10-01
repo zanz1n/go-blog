@@ -3,6 +3,7 @@ package server
 import (
 	"context"
 	"log/slog"
+	"mime"
 	"net/http"
 	"strings"
 	"time"
@@ -56,6 +57,7 @@ func NewServer(appName string) *Server {
 		DisableStartupMessage: true,
 		Views:                 engine,
 		AppName:               appName,
+		ErrorHandler:          s.ErrorHandler,
 	})
 
 	s.app.Hooks().OnListen(s.OnListen)
@@ -66,6 +68,43 @@ func NewServer(appName string) *Server {
 	s.app.Get("/", s.HandleHome)
 
 	return &s
+}
+
+func (s *Server) ErrorHandler(c *fiber.Ctx, err error) error {
+	mt, _, _ := mime.ParseMediaType(c.Accepts())
+
+	e, ok := err.(*fiber.Error)
+	if !ok {
+		e = fiber.ErrInternalServerError
+	}
+	s.handleErrorJson(c, e)
+
+	if mt == "application/json" {
+		s.handleErrorJson(c, e)
+	} else {
+		s.handleHtmlError(c, e)
+	}
+
+	return nil
+}
+
+func (s *Server) handleHtmlError(c *fiber.Ctx, e *fiber.Error) {
+	if e.Code == 404 {
+		c.Status(404).Render("404",
+			fiberutils.CreateProps(s.pp, c, ""),
+		)
+	} else {
+		c.Status(500).Render("500",
+			fiberutils.CreateProps(s.pp, c, ""),
+		)
+	}
+}
+
+func (s *Server) handleErrorJson(c *fiber.Ctx, e *fiber.Error) {
+	c.Status(e.Code).JSON(errors.ErrorBody{
+		Message:   e.Message,
+		ErrorCode: uint(e.Code),
+	})
 }
 
 func (s *Server) assetsHandler(fs http.FileSystem) func(*fiber.Ctx) error {
