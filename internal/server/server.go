@@ -17,14 +17,31 @@ import (
 	"github.com/zanz1n/go-htmx/website"
 )
 
+var routes = []pages.CreateRouteInfo{
+	{
+		Name: "Home",
+		Href: "/",
+	},
+	{
+		Name: "Posts",
+		Href: "/posts",
+	},
+}
+
 type Server struct {
 	app *fiber.App
 	pp  *pages.PagePropsProvider
 }
 
-func NewServer(pp *pages.PagePropsProvider) *Server {
+func NewServer(appName string) *Server {
 	fs := http.FS(website.EmbedAssets)
-	s := Server{pp: pp}
+
+	s := Server{
+		pp: &pages.PagePropsProvider{
+			AppName: appName,
+			Routes:  routes,
+		},
+	}
 
 	engine := handlebars.NewFileSystem(fs, ".hbs")
 	engine.Directory = "/dist/templates"
@@ -38,6 +55,7 @@ func NewServer(pp *pages.PagePropsProvider) *Server {
 		JSONDecoder:           json.Unmarshal,
 		DisableStartupMessage: true,
 		Views:                 engine,
+		AppName:               appName,
 	})
 
 	s.app.Hooks().OnListen(s.OnListen)

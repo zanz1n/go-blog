@@ -8,7 +8,7 @@ import (
 func (s *Server) HandleHome(c *fiber.Ctx) error {
 	return c.Render("index", pages.CreateProps(
 		s.pp,
-		"Home",
+		c.Path(),
 		nil,
 		"Hello World",
 	))
