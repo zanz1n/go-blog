@@ -1,3 +1,5 @@
+import "htmx.org";
+
 import { fetchData } from "./lib/main";
 import "./global.css";
 import "./index.css";
