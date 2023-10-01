@@ -17,7 +17,7 @@ func NewLoggerMiddleware() fiber.Handler {
 
 		if chainErr != nil {
 			if err := errHandler(c, chainErr); err != nil {
-				slog.Error("%v", chainErr)
+				slog.Error("Not Handled Fiber Error", "error", chainErr)
 				_ = c.SendStatus(fiber.StatusInternalServerError)
 			}
 		}
