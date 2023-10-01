@@ -1,12 +1,22 @@
 :root {
-    --background: #ffffff;
-    --foreground: #282a36;
+    --text-color: #000000;
+    --background: #f6f6f6;
+    --hover-text: #505050;
+    --button-shadow: rgba(0, 0, 0, 0.48);
+    --button-hover-shadow: rgba(0, 0, 0, 0.7);
+}
+
+[data-theme="dark"] {
+    --text-color: #cfcfcf;
+    --background: #161616;
+    --hover-text: #ffffff;
+    --button-shadow: rgba(204, 204, 204, 0.27);
+    --button-hover-shadow: rgba(204, 204, 204, 0.7);
 }
 
 * {
     padding: 0;
     margin: 0;
-    text-decoration: none;
     box-sizing: border-box;
 }
 
