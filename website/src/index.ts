@@ -1,8 +1,8 @@
 import "htmx.org";
-
-import { fetchData } from "./lib/main";
 import "./global.css";
 import "./index.css";
+
+import { fetchData } from "./lib/main";
 
 const element = document.getElementById("data");
 
