@@ -10,9 +10,7 @@ const plugins = [];
 /** @type {CopyWebpackPlugin.Pattern[]} */
 const copies = [];
 
-/**
- * @param {RegExp} regex 
- */
+/** @param {RegExp} regex */
 function loadTemplates(regex) {
     const entries = fs.readdirSync(path.join(__dirname, "templates"));
 
@@ -28,7 +26,7 @@ function loadTemplates(regex) {
                 minify: false,
                 chunks: [filename],
                 publicPath: "/assets",
-                favicon,
+                favicon
             }));
         } else {
             copies.push({
@@ -58,6 +56,17 @@ function loadScriptEntries(ext = ".js") {
     return res;
 }
 
+function loadPublicAssets(dir = "./public") {
+    const entries = fs.readdirSync(path.join(__dirname, dir));
+
+    for (let entry of entries) {
+        copies.push({
+            from: path.join(__dirname, dir, entry),
+            to: entry
+        });
+    }
+}
+
 // CSS
 plugins.push(new MiniCssExtractPlugin({
     filename: "[name]-[contenthash].css"
@@ -70,6 +79,9 @@ if (copies.length > 0) {
         patterns: copies,
     }));
 }
+
+// Assets
+loadPublicAssets();
 
 /**@type {import("webpack").Configuration} */
 module.exports = {
@@ -96,7 +108,6 @@ module.exports = {
             }
         ],
     },
-
 
     resolve: {
         extensions: [".ts", ".js", ".css"],
