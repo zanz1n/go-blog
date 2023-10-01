@@ -25,6 +25,8 @@ RUN CGO_ENABLED=0 go build -tags "production" -ldflags "-s -w" -o bin/main .
 
 FROM gcr.io/distroless/static-debian11
 
+ENV LISTEN_ADDR=":8080"
+
 COPY --from=golang_builder /build/bin/main /bin/app
 
 CMD [ "/bin/app" ]
