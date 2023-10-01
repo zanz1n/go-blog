@@ -65,9 +65,11 @@ plugins.push(new MiniCssExtractPlugin({
 
 // Templates
 loadTemplates(/\.hbs$/);
-plugins.push(new CopyWebpackPlugin({
-    patterns: copies,
-}));
+if (copies.length > 0) {
+    plugins.push(new CopyWebpackPlugin({
+        patterns: copies,
+    }));
+}
 
 /**@type {import("webpack").Configuration} */
 module.exports = {
