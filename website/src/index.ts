@@ -1,6 +1,6 @@
 import "htmx.org";
 import "./scripts/themes";
 
-import "./global.css";
+import "./styles/global.css";
+import "./styles/header.css";
 import "./index.css";
-import "./header.css";

@@ -1,5 +1,5 @@
 import "./scripts/themes";
 
-import "./global.css";
-import "./header.css";
+import "./styles/global.css";
+import "./styles/header.css";
 import "./404.css";
