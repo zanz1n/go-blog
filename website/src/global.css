@@ -22,6 +22,6 @@
 
 body {
     font-family: 'Lato', sans-serif;
-    color: var(--foreground);
+    color: var(--text-color);
     background-color: var(--background);
 }
