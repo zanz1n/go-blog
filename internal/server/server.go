@@ -1,9 +1,11 @@
 package server
 
 import (
+	"context"
 	"log/slog"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/goccy/go-json"
 	"github.com/gofiber/fiber/v2"
@@ -25,7 +27,7 @@ func NewServer() *Server {
 	engine := handlebars.NewFileSystem(fs, ".hbs")
 	engine.Directory = "/dist/templates"
 
-	app := fiber.New(fiber.Config{
+	s.app = fiber.New(fiber.Config{
 		ServerHeader:          "fasthttp",
 		CaseSensitive:         true,
 		Prefork:               false,
@@ -35,14 +37,13 @@ func NewServer() *Server {
 		DisableStartupMessage: true,
 		Views:                 engine,
 	})
-	s.app = app
 
-	app.Hooks().OnListen(s.OnListen)
+	s.app.Hooks().OnListen(s.OnListen)
 
-	app.Use(fiberutils.NewLoggerMiddleware())
-	app.Use("/assets", s.assetsHandler(fs))
+	s.app.Use(fiberutils.NewLoggerMiddleware())
+	s.app.Use("/assets", s.assetsHandler(fs))
 
-	app.Get("/", s.HandleHome)
+	s.app.Get("/", s.HandleHome)
 
 	return &s
 }
@@ -65,6 +66,13 @@ func (s *Server) assetsHandler(fs http.FileSystem) func(*fiber.Ctx) error {
 
 func (s *Server) Listen(addr string) error {
 	return s.app.Listen(addr)
+}
+
+func (s *Server) Shutdown() {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	s.app.ShutdownWithContext(ctx)
 }
 
 func (s *Server) OnListen(ld fiber.ListenData) error {
