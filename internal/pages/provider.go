@@ -1,7 +1,5 @@
 package pages
 
-import "strings"
-
 type PagePropsProvider struct {
 	AppName string
 	Routes  []CreateRouteInfo
@@ -17,7 +15,11 @@ func CreateProps[T any](
 
 	routes := make([]Route, len(pp.Routes))
 	for i, v := range pp.Routes {
-		isCurrent := strings.Contains(path, v.Href)
+		isCurrent := false
+		if len(path) > 0 {
+			isCurrent = v.Href == path || v.Href == path[0:len(path)-1]
+		}
+
 		if isCurrent {
 			pageName = v.Name
 		}
