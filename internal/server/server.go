@@ -10,6 +10,7 @@ import (
 
 	"github.com/goccy/go-json"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/filesystem"
 	"github.com/gofiber/fiber/v2/middleware/recover"
 	"github.com/gofiber/template/handlebars/v2"
@@ -65,6 +66,7 @@ func NewServer(appName string) *Server {
 
 	s.app.Use(recover.New())
 	s.app.Use(fiberutils.NewLoggerMiddleware())
+	s.app.Use(cors.New())
 	s.app.Use("/assets", s.assetsHandler(fs))
 
 	s.app.Get("/", s.HandleHome)
@@ -131,7 +133,7 @@ func (s *Server) Listen(addr string) error {
 }
 
 func (s *Server) Shutdown() {
-	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
 	s.app.ShutdownWithContext(ctx)
