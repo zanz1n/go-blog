@@ -97,11 +97,11 @@ func (s *Server) ErrorHandler(c *fiber.Ctx, err error) error {
 func (s *Server) handleHtmlError(c *fiber.Ctx, e *fiber.Error) {
 	if e.Code == 404 || e.Code == 405 {
 		c.Status(404).Render("404",
-			fiberutils.CreateProps(s.pp, c, ""),
+			fiberutils.CreateProps(s.pp, c, "404", struct{}{}),
 		)
 	} else {
 		c.Status(500).Render("500",
-			fiberutils.CreateProps(s.pp, c, ""),
+			fiberutils.CreateProps(s.pp, c, "500", struct{}{}),
 		)
 	}
 }

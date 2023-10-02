@@ -7,12 +7,12 @@ import (
 
 func (s *Server) HandleHome(c *fiber.Ctx) error {
 	return c.Status(200).Render("index",
-		fiberutils.CreateProps(s.pp, c, "Hello World"),
+		fiberutils.CreateProps(s.pp, c, "Home", "Hello World"),
 	)
 }
 
 func (s *Server) HandleLogin(c *fiber.Ctx) error {
 	return c.Status(200).Render("login",
-		fiberutils.CreateProps(s.pp, c, "Hello World"),
+		fiberutils.CreateProps(s.pp, c, "Login", "Hello World"),
 	)
 }

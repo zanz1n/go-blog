@@ -8,7 +8,8 @@ import (
 func CreateProps[T any](
 	pp *pages.PagePropsProvider,
 	c *fiber.Ctx,
+	pageName string,
 	data T,
 ) pages.PageProps[T] {
-	return pages.CreateProps(pp, c.Path(), nil, data)
+	return pages.CreateProps(pp, c.Path(), pageName, nil, data)
 }

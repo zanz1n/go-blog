@@ -8,20 +8,15 @@ type PagePropsProvider struct {
 func CreateProps[T any](
 	pp *PagePropsProvider,
 	path string,
+	pageName string,
 	user *UserProps,
 	data T,
 ) PageProps[T] {
-	pageName := ""
-
 	routes := make([]Route, len(pp.Routes))
 	for i, v := range pp.Routes {
 		isCurrent := false
 		if len(path) > 0 {
 			isCurrent = v.Href == path || v.Href == path[0:len(path)-1]
-		}
-
-		if isCurrent {
-			pageName = v.Name
 		}
 
 		routes[i] = Route{
