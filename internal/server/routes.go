@@ -10,3 +10,9 @@ func (s *Server) HandleHome(c *fiber.Ctx) error {
 		fiberutils.CreateProps(s.pp, c, "Hello World"),
 	)
 }
+
+func (s *Server) HandleLogin(c *fiber.Ctx) error {
+	return c.Status(200).Render("login",
+		fiberutils.CreateProps(s.pp, c, "Hello World"),
+	)
+}

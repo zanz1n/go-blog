@@ -70,6 +70,7 @@ func NewServer(appName string) *Server {
 	s.app.Use("/assets", s.assetsHandler(fs))
 
 	s.app.Get("/", s.HandleHome)
+	s.app.Get("/login", s.HandleLogin)
 
 	return &s
 }
@@ -94,7 +95,7 @@ func (s *Server) ErrorHandler(c *fiber.Ctx, err error) error {
 }
 
 func (s *Server) handleHtmlError(c *fiber.Ctx, e *fiber.Error) {
-	if e.Code == 404 {
+	if e.Code == 404 || e.Code == 405 {
 		c.Status(404).Render("404",
 			fiberutils.CreateProps(s.pp, c, ""),
 		)
