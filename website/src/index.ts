@@ -1,4 +1,3 @@
-import "htmx.org";
 import "./scripts/themes";
 
 import "./styles/global.css";
