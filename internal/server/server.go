@@ -11,6 +11,7 @@ import (
 	"github.com/goccy/go-json"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/filesystem"
+	"github.com/gofiber/fiber/v2/middleware/recover"
 	"github.com/gofiber/template/handlebars/v2"
 	"github.com/zanz1n/go-htmx/internal/errors"
 	"github.com/zanz1n/go-htmx/internal/fiberutils"
@@ -62,6 +63,7 @@ func NewServer(appName string) *Server {
 
 	s.app.Hooks().OnListen(s.OnListen)
 
+	s.app.Use(recover.New())
 	s.app.Use(fiberutils.NewLoggerMiddleware())
 	s.app.Use("/assets", s.assetsHandler(fs))
 
@@ -75,6 +77,7 @@ func (s *Server) ErrorHandler(c *fiber.Ctx, err error) error {
 
 	e, ok := err.(*fiber.Error)
 	if !ok {
+		slog.Error("Unhandled error", "error", err)
 		e = fiber.ErrInternalServerError
 	}
 	s.handleErrorJson(c, e)
