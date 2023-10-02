@@ -1,2 +1,5 @@
 /bin
+/tmp
+/testdata
+*.log
 .env
