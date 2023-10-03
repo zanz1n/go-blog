@@ -1,15 +1,11 @@
 package errors
 
-var ise = &statusErrorImpl{
-	code:     50000,
-	httpCode: 500,
-	message:  "Something went wrong",
+var ise = &StatusError{
+	Code:     50000,
+	HttpCode: 500,
+	Message:  "Something went wrong",
 }
 
 var (
-	ErrInternalServerError = New("internal server error")
+	ErrInternalServerError = ise
 )
-
-var mpe = map[error]StatusError{
-	ErrInternalServerError: ise,
-}

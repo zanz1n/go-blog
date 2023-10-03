@@ -137,19 +137,12 @@ func (s *Server) Shutdown() {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
-	s.app.ShutdownWithContext(ctx)
+	if err := s.app.ShutdownWithContext(ctx); err != nil {
+		slog.Error("Fiber shutdown failed", "error", err)
+	}
 }
 
 func (s *Server) OnListen(ld fiber.ListenData) error {
 	slog.Info("Listenning for requests", "port", ld.Port)
 	return nil
-}
-
-func (s *Server) HandleErr(c *fiber.Ctx, err error) error {
-	e := errors.GetStatusErr(err)
-
-	return c.Status(e.HttpCode()).JSON(errors.ErrorBody{
-		Message:   e.Message(),
-		ErrorCode: e.CustomCode(),
-	})
 }
