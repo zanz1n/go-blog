@@ -11,6 +11,6 @@ func (s *StatusError) Error() string {
 }
 
 type ErrorBody struct {
-	Message   string `json:"Message"`
+	Message   string `json:"message"`
 	ErrorCode uint   `json:"error_code"`
 }
