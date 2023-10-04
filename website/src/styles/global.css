@@ -5,6 +5,7 @@
     --hover-text: #505050;
     --button-shadow: rgba(0, 0, 0, 0.48);
     --button-hover-shadow: rgba(0, 0, 0, 0.7);
+    --red: #ff5555;
 }
 
 [data-theme="dark"] {
@@ -14,6 +15,7 @@
     --hover-text: #ffffff;
     --button-shadow: rgba(204, 204, 204, 0.27);
     --button-hover-shadow: rgba(204, 204, 204, 0.7);
+    --red: #ff6f6f;
 }
 
 * {
