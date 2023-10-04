@@ -10,7 +10,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-func NewJwtAuthService(hmac []byte, duration time.Duration) AuthRepository {
+func NewJwtRepository(hmac []byte, duration time.Duration) AuthRepository {
 	return &JwtAuthRepository{
 		hmacKey:       hmac,
 		tokenDuration: duration,
