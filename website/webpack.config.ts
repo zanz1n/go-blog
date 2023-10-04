@@ -12,6 +12,20 @@ const minifyTemplates = true;
 const plugins: WebpackPluginInstance[] = [];
 const copies: CopyWebpackPlugin.Pattern[] = [];
 
+function loadPublicAssets(dir = "./public") {
+    const entries = fs.readdirSync(path.join(__dirname, dir));
+
+    for (const entry of entries) {
+        copies.push({
+            from: path.join(__dirname, dir, entry),
+            to: entry
+        });
+    }
+}
+
+// Assets
+loadPublicAssets();
+
 function loadTemplates(regex: RegExp, sub = false, dir = "templates") {
     const entries = fs.readdirSync(path.join(__dirname, dir));
 
@@ -71,17 +85,6 @@ function loadScriptEntries(ext = ".js") {
     return res;
 }
 
-function loadPublicAssets(dir = "./public") {
-    const entries = fs.readdirSync(path.join(__dirname, dir));
-
-    for (const entry of entries) {
-        copies.push({
-            from: path.join(__dirname, dir, entry),
-            to: entry
-        });
-    }
-}
-
 // CSS
 plugins.push(new MiniCssExtractPlugin({
     filename: "[name]-[contenthash].css"
@@ -94,9 +97,6 @@ if (copies.length > 0) {
         patterns: copies,
     }));
 }
-
-// Assets
-loadPublicAssets();
 
 const config: Configuration = {
     plugins,
