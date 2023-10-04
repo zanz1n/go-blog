@@ -22,9 +22,14 @@
     "declaration": false,
     "sourceMap": false
   },
+  "ts-node": {
+    "compilerOptions": {
+      "module": "CommonJS"
+    }
+  },
   "include": [
     "src/**/*.d.ts",
-    "src/**/*.ts",
+    "**/*.ts",
     "src/**/*.js"
   ]
 }

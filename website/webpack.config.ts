@@ -1,22 +1,21 @@
-const path = require("path");
-const fs = require("fs");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
-const CopyWebpackPlugin = require("copy-webpack-plugin");
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
+import path from "path";
+import fs from "fs";
+import HtmlWebpackPlugin from "html-webpack-plugin";
+import CopyWebpackPlugin from "copy-webpack-plugin";
+import MiniCssExtractPlugin from "mini-css-extract-plugin";
+import CssMinimizerPlugin from "css-minimizer-webpack-plugin";
+import { Configuration, WebpackPluginInstance } from "webpack";
 
 const favicon = "favicon.svg";
 const minifyTemplates = true;
 
-const plugins = [];
-/** @type {CopyWebpackPlugin.Pattern[]} */
-const copies = [];
+const plugins: WebpackPluginInstance[] = [];
+const copies: CopyWebpackPlugin.Pattern[] = [];
 
-/** @param {RegExp} regex */
-function loadTemplates(regex, sub = false, dir = "templates") {
+function loadTemplates(regex: RegExp, sub = false, dir = "templates") {
     const entries = fs.readdirSync(path.join(__dirname, dir));
 
-    for (let entry of entries) {
+    for (const entry of entries) {
         if (regex.test(entry)) {
             const filenameS = entry.split(".");
             filenameS.pop();
@@ -56,9 +55,9 @@ function loadTemplates(regex, sub = false, dir = "templates") {
 function loadScriptEntries(ext = ".js") {
     const entries = fs.readdirSync(path.join(__dirname, "src"));
 
-    const res = {};
+    const res: Record<string, string> = {};
 
-    for (let entry of entries) {
+    for (const entry of entries) {
         if (entry.endsWith(ext) && entry.length > ext.length) {
             const stat = fs.statSync(path.join(__dirname, "src", entry));
 
@@ -75,7 +74,7 @@ function loadScriptEntries(ext = ".js") {
 function loadPublicAssets(dir = "./public") {
     const entries = fs.readdirSync(path.join(__dirname, dir));
 
-    for (let entry of entries) {
+    for (const entry of entries) {
         copies.push({
             from: path.join(__dirname, dir, entry),
             to: entry
@@ -99,8 +98,7 @@ if (copies.length > 0) {
 // Assets
 loadPublicAssets();
 
-/**@type {import("webpack").Configuration} */
-module.exports = {
+const config: Configuration = {
     plugins,
 
     mode: "production",
@@ -143,3 +141,5 @@ module.exports = {
         ]
     }
 };
+
+export default config;

@@ -3,7 +3,6 @@ env:
   node: true
 ignorePatterns:
   - "dist/"
-  - "webpack.config.js"
 extends:
   - eslint:recommended
   - plugin:@typescript-eslint/recommended
