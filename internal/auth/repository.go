@@ -29,7 +29,8 @@ func (u *UserAuthPayload) Validate() error {
 }
 
 type AuthRepository interface {
-	CreateUserToken(data *UserAuthPayload) (string, error)
+	EncodeUserToken(data *UserAuthPayload) (string, error)
+	CreateUserToken(info *user.User) (string, error)
 	DecodeUserToken(payload string) (*UserAuthPayload, error)
-	AuthUser(info *user.User, phash string) (string, error)
+	AuthUser(info *user.User, passwd string) (string, error)
 }

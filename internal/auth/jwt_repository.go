@@ -22,7 +22,18 @@ type JwtAuthRepository struct {
 	hmacKey       []byte
 }
 
-func (as *JwtAuthRepository) CreateUserToken(data *UserAuthPayload) (string, error) {
+func (as *JwtAuthRepository) CreateUserToken(info *user.User) (string, error) {
+	now := time.Now()
+	return as.EncodeUserToken(&UserAuthPayload{
+		UserId:     info.ID,
+		Email:      info.Email,
+		IssuedAt:   now.Unix(),
+		ExpiryDate: now.Add(as.tokenDuration).Unix(),
+		Role:       info.Role,
+	})
+}
+
+func (as *JwtAuthRepository) EncodeUserToken(data *UserAuthPayload) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS512, data)
 
 	s, err := token.SignedString(as.hmacKey)
@@ -48,10 +59,10 @@ func (as *JwtAuthRepository) DecodeUserToken(payload string) (*UserAuthPayload, 
 	return &claims, nil
 }
 
-func (as *JwtAuthRepository) AuthUser(info *user.User, phash string) (string, error) {
+func (as *JwtAuthRepository) AuthUser(info *user.User, passwd string) (string, error) {
 	err := bcrypt.CompareHashAndPassword(
-		utils.S2B(phash),
 		utils.S2B(info.Password),
+		utils.S2B(passwd),
 	)
 	if err != nil {
 		return "", errors.ErrLoginFailed
@@ -66,7 +77,7 @@ func (as *JwtAuthRepository) AuthUser(info *user.User, phash string) (string, er
 		Role:       info.Role,
 	}
 
-	return as.CreateUserToken(&claims)
+	return as.EncodeUserToken(&claims)
 }
 
 func (as *JwtAuthRepository) userTokenKeyFunc(token *jwt.Token) (any, error) {
