@@ -15,9 +15,7 @@ type Route struct {
 
 type UserProps struct {
 	ID         string
-	Username   string
 	Email      string
-	CreatedAt  time.Time
 	Expiration time.Time
 }
 
