@@ -2,13 +2,14 @@ package repository
 
 import (
 	"context"
+	"time"
+
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgtype"
 	"github.com/zanz1n/go-htmx/internal/errors"
 	"github.com/zanz1n/go-htmx/internal/sqli"
 	"github.com/zanz1n/go-htmx/internal/user"
-	"time"
 )
 
 func NewPostgresRepository(dba sqli.Querier) UserRepository {
@@ -24,6 +25,22 @@ func (r *UserPostgresRepository) GetById(id uuid.UUID) (*user.User, error) {
 	defer cancel()
 
 	u, err := r.dba.GetUserById(ctx, pguuid(id))
+	if err != nil {
+		if err == pgx.ErrNoRows {
+			return nil, errors.ErrUserNotFound
+		} else {
+			return nil, errors.ErrUserFetchFailed
+		}
+	}
+
+	return pgToApiUser(u), nil
+}
+
+func (r *UserPostgresRepository) GetByEmail(email string) (*user.User, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	u, err := r.dba.GetUserByEmail(ctx, email)
 	if err != nil {
 		if err == pgx.ErrNoRows {
 			return nil, errors.ErrUserNotFound
