@@ -2,9 +2,11 @@
     --background-contrasted: #ffffff;
     --text-color: #000000;
     --background: #f6f6f6;
+    --background-front: #e6e6e6;
     --hover-text: #505050;
     --button-shadow: rgba(0, 0, 0, 0.48);
     --button-hover-shadow: rgba(0, 0, 0, 0.7);
+    --button-shadow-reverse: rgba(204, 204, 204, 0.27);
     --red: #ff5555;
 }
 
@@ -12,9 +14,11 @@
     --background-contrasted: #000000;
     --text-color: #dddddd;
     --background: #161616;
+    --background-front: #252525;
     --hover-text: #ffffff;
     --button-shadow: rgba(204, 204, 204, 0.27);
     --button-hover-shadow: rgba(204, 204, 204, 0.7);
+    --button-shadow-reverse: rgba(0, 0, 0, 0.48);
     --red: #ff6f6f;
 }
 

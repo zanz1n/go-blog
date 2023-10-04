@@ -7,6 +7,9 @@
 .login-container .login-box {
     width: 500px;
     padding: 32px;
+    background-color: var(--background-front);
+    box-shadow: 0 0 10px var(--button-shadow-reverse);
+    border-radius: 10px;
 }
 
 .login-container .login-error {
@@ -25,6 +28,7 @@
 .login-container form h1 {
     align-self: flex-start;
     font-size: 2.4rem;
+    margin-bottom: 12px;
 }
 
 .login-container .input-label {
@@ -86,10 +90,8 @@
 
     .login-container .login-box {
         width: 100vw;
-    }
-
-    .login-container form {
-        gap: 32px;
+        background-color: transparent;
+        box-shadow: none;
     }
 
     .login-container form h1 {
