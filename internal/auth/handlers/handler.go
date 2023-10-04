@@ -57,3 +57,7 @@ func (h *AuthHandlers) HandleSignup(data *user.UserCreateData) (*user.User, stri
 
 	return u, token, nil
 }
+
+func (h *AuthHandlers) DecodeAuthToken(token string) (*auth.UserAuthPayload, error) {
+	return h.as.DecodeUserToken(token)
+}
