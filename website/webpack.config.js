@@ -6,13 +6,15 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
 
 const favicon = "favicon.svg";
+const minifyTemplates = true;
+
 const plugins = [];
 /** @type {CopyWebpackPlugin.Pattern[]} */
 const copies = [];
 
 /** @param {RegExp} regex */
-function loadTemplates(regex) {
-    const entries = fs.readdirSync(path.join(__dirname, "templates"));
+function loadTemplates(regex, sub = false, dir = "templates") {
+    const entries = fs.readdirSync(path.join(__dirname, dir));
 
     for (let entry of entries) {
         if (regex.test(entry)) {
@@ -20,19 +22,33 @@ function loadTemplates(regex) {
             filenameS.pop();
             const filename = filenameS.join(".");
 
-            plugins.push(new HtmlWebpackPlugin({
-                template: path.join(__dirname, "templates", entry),
-                filename: path.join("templates", entry),
-                minify: false,
-                chunks: [filename],
-                publicPath: "/assets",
-                favicon
-            }));
+            if (!sub) {
+                plugins.push(new HtmlWebpackPlugin({
+                    template: path.join(__dirname, dir, entry),
+                    filename: path.join(dir, entry),
+                    minify: minifyTemplates,
+                    chunks: [filename],
+                    publicPath: "/assets",
+                    favicon
+                }));
+            } else {
+                plugins.push(new HtmlWebpackPlugin({
+                    template: path.join(__dirname, dir, entry),
+                    filename: path.join(dir, entry),
+                    minify: minifyTemplates,
+                    chunks: [],
+                }));
+            }
         } else {
-            copies.push({
-                from: path.join(__dirname, "templates", entry),
-                to: path.join("templates", entry)
-            });
+            const fstat = fs.statSync(path.join(__dirname, dir, entry));
+            if (fstat.isDirectory()) {
+                loadTemplates(regex, true, path.join(dir, entry));
+            } else {
+                copies.push({
+                    from: path.join(__dirname, dir, entry),
+                    to: path.join(dir, entry)
+                });
+            }
         }
     }
 }
