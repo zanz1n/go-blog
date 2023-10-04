@@ -9,6 +9,11 @@
     padding: 32px;
 }
 
+.login-container .login-error {
+    color: var(--red);
+    text-align: center;
+}
+
 .login-container form {
     display: flex;
     flex-direction: column;
@@ -20,6 +25,17 @@
 .login-container form h1 {
     align-self: flex-start;
     font-size: 2.4rem;
+}
+
+.login-container .input-label {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 10px;
+}
+
+.login-container .input-label label {
+    font-size: 1.2rem;
 }
 
 .login-container form input {

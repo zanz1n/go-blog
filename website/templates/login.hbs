@@ -11,9 +11,20 @@
         <div class="login-box">
             <form method="post" action="/login">
                 <h1>Login</h1>
+                {{#if Data.Error}}
+                <div class="login-error">
+                    <p>{{ Data.Error }}</p>
+                </div>
+                {{/if}}
 
-                <input type="text" alt="Email" placeholder="Email">
-                <input type="password" alt="Password" placeholder="Password">
+                <div class="input-label">
+                    <label for="login-email">Email</label>
+                    <input id="signup-email" name="email" type="text" placeholder="Email">
+                </div>
+                <div class="input-label">
+                    <label for="login-password">Password</label>
+                    <input id="signup-password" name="password" type="password" placeholder="Password">
+                </div>
 
                 <p>Don't have an account? <a href="/signup">Create one</a></p>
                 <button type="submit">Login</button>
