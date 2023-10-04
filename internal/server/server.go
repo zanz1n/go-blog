@@ -14,6 +14,7 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/filesystem"
 	"github.com/gofiber/fiber/v2/middleware/recover"
 	"github.com/gofiber/template/handlebars/v2"
+	auth_handlers "github.com/zanz1n/go-htmx/internal/auth/handlers"
 	"github.com/zanz1n/go-htmx/internal/errors"
 	"github.com/zanz1n/go-htmx/internal/fiberutils"
 	"github.com/zanz1n/go-htmx/internal/pages"
@@ -32,14 +33,16 @@ var routes = []pages.CreateRouteInfo{
 }
 
 type Server struct {
-	app *fiber.App
-	pp  *pages.PagePropsProvider
+	app          *fiber.App
+	pp           *pages.PagePropsProvider
+	authHandlers *auth_handlers.AuthHandlers
 }
 
-func NewServer(appName string) *Server {
+func NewServer(appName string, ah *auth_handlers.AuthHandlers) *Server {
 	fs := http.FS(website.EmbedAssets)
 
 	s := Server{
+		authHandlers: ah,
 		pp: &pages.PagePropsProvider{
 			AppName: appName,
 			Routes:  routes,
@@ -69,8 +72,16 @@ func NewServer(appName string) *Server {
 	s.app.Use(cors.New())
 	s.app.Use("/assets", s.assetsHandler(fs))
 
-	s.app.Get("/", s.HandleHome)
-	s.app.Get("/login", s.HandleLogin)
+	s.app.Use(s.UserExtractorMiddleware)
+
+	s.app.Get("/", s.HandleGetHome)
+
+	s.app.Get("/login", s.HandleGetLogin)
+	s.app.Post("/login", s.HandlePostLogin)
+	s.app.Get("/signup", s.HandleGetSignup)
+	s.app.Post("/signup", s.HandlePostSignup)
+	s.app.Get("/logout", s.HandleLogout)
+	s.app.Post("/logout", s.HandleLogout)
 
 	return &s
 }
@@ -145,4 +156,8 @@ func (s *Server) Shutdown() {
 func (s *Server) OnListen(ld fiber.ListenData) error {
 	slog.Info("Listenning for requests", "port", ld.Port)
 	return nil
+}
+
+func str(s string) *string {
+	return &s
 }
