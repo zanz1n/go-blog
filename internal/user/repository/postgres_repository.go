@@ -10,6 +10,8 @@ import (
 	"github.com/zanz1n/go-htmx/internal/errors"
 	"github.com/zanz1n/go-htmx/internal/sqli"
 	"github.com/zanz1n/go-htmx/internal/user"
+	"github.com/zanz1n/go-htmx/internal/utils"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func NewPostgresRepository(dba sqli.Querier) UserRepository {
@@ -56,7 +58,20 @@ func (r *UserPostgresRepository) Create(data *user.UserCreateData) (*user.User, 
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
-	u, err := r.dba.CreateUser(ctx, apiToPgCreateUserParams(data))
+	user := sqli.CreateUserParams{
+		ID:       pguuid(uuid.New()),
+		Username: data.Username,
+		Email:    data.Email,
+	}
+
+	hash, err := bcrypt.GenerateFromPassword(utils.S2B(data.Password), bcrypt.DefaultCost)
+	if err != nil {
+		return nil, errors.ErrPasswordTooLong
+	}
+
+	user.Password = utils.B2S(hash)
+
+	u, err := r.dba.CreateUser(ctx, &user)
 	if err != nil {
 		return nil, errors.ErrUserAlreadyExists
 	}
@@ -73,15 +88,6 @@ func pgToApiUser(u *sqli.User) *user.User {
 		Username:  u.Username,
 		Password:  u.Password,
 		Role:      user.UserRole(u.Role),
-	}
-}
-
-func apiToPgCreateUserParams(data *user.UserCreateData) *sqli.CreateUserParams {
-	return &sqli.CreateUserParams{
-		ID:       pguuid(uuid.New()),
-		Username: data.Username,
-		Email:    data.Email,
-		Password: data.Password,
 	}
 }
 
