@@ -38,4 +38,14 @@ var (
 		HttpCode: 401,
 		Message: "User don't exist or passwords do not match",
 	}
+	ErrInvalidLoginData = &StatusError{
+		Code: 40103,
+		HttpCode: 401,
+		Message: "The provided login data is invalid",
+	}
+	ErrInvalidSignupData = &StatusError{
+		Code: 40104,
+		HttpCode: 401,
+		Message: "The provided sign up data is invalid",
+	}
 )
