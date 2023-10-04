@@ -23,9 +23,16 @@
             <button class="theme-btn" id="themeswap.button">
                 <img width="24px" height="24px" src="/assets/moon.svg" />
             </button>
+
+            {{#if User}}
+            <a href="/logout">
+                <button class="login-btn">Logout</button>
+            </a>
+            {{else}}
             <a href="/login">
                 <button class="login-btn">Login</button>
             </a>
+            {{/if}}
         </div>
     </header>
     <hr>
