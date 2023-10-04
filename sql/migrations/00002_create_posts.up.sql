@@ -7,7 +7,7 @@ CREATE TABLE "posts" (
     "thumb_image" uuid,
     "user_id" uuid NOT NULL,
 
-    CONSTRAINT "posts_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "user"("id")
+    CONSTRAINT "posts_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id")
     ON DELETE CASCADE ON UPDATE CASCADE
 );
 
