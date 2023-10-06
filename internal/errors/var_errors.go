@@ -53,4 +53,14 @@ var (
 		HttpCode: 401,
 		Message:  "The provided password is too long",
 	}
+	ErrPostNotFound = &StatusError{
+		Code:     40402,
+		HttpCode: 404,
+		Message:  "The post could not be found",
+	}
+	ErrPostFetchFailed = &StatusError{
+		Code:     50003,
+		HttpCode: 500,
+		Message:  "Something went wrong while fetching post data, try again later",
+	}
 )

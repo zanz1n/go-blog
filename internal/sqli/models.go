@@ -55,13 +55,15 @@ func (ns NullUserRole) Value() (driver.Value, error) {
 }
 
 type Post struct {
-	ID         pgtype.UUID
-	CreatedAt  pgtype.Timestamp
-	UpdatedAt  pgtype.Timestamp
-	Title      string
-	Content    []byte
-	ThumbImage pgtype.UUID
-	UserID     pgtype.UUID
+	ID          pgtype.UUID
+	CreatedAt   pgtype.Timestamp
+	UpdatedAt   pgtype.Timestamp
+	Title       string
+	Content     []byte
+	Topics      []byte
+	Description string
+	ThumbImage  pgtype.UUID
+	UserID      pgtype.UUID
 }
 
 type User struct {

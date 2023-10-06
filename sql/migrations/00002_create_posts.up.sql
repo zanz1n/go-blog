@@ -4,6 +4,8 @@ CREATE TABLE "posts" (
     "updated_at" timestamp(3) NOT NULL DEFAULT current_timestamp,
     "title" varchar(192) NOT NULL,
     "content" bytea NOT NULL,
+    "topics" bytea NOT NULL,
+    "description" varchar(255) NOT NULL,
     "thumb_image" uuid,
     "user_id" uuid NOT NULL,
 

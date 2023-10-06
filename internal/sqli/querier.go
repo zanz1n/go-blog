@@ -11,7 +11,11 @@ import (
 )
 
 type Querier interface {
+	CreatePost(ctx context.Context, arg *CreatePostParams) (*Post, error)
 	CreateUser(ctx context.Context, arg *CreateUserParams) (*User, error)
+	GetPartialPostById(ctx context.Context, id pgtype.UUID) (*GetPartialPostByIdRow, error)
+	GetPostById(ctx context.Context, id pgtype.UUID) (*Post, error)
+	GetPostByIdWithUser(ctx context.Context, id pgtype.UUID) (*GetPostByIdWithUserRow, error)
 	GetUserByEmail(ctx context.Context, email string) (*User, error)
 	GetUserById(ctx context.Context, id pgtype.UUID) (*User, error)
 }
