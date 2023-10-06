@@ -70,7 +70,7 @@ func (s *Server) HandlePostLogin(c *fiber.Ctx) error {
 
 	c.Cookie(cookie)
 
-	return c.Redirect("/")
+	return c.Redirect("/" + c.Query("from"))
 }
 
 func (s *Server) HandleGetSignup(c *fiber.Ctx) error {
@@ -110,10 +110,10 @@ func (s *Server) HandlePostSignup(c *fiber.Ctx) error {
 
 	c.Cookie(cookie)
 
-	return c.Redirect("/")
+	return c.Redirect("/" + c.Query("from"))
 }
 
 func (s *Server) HandleLogout(c *fiber.Ctx) error {
 	c.ClearCookie("auth_token")
-	return c.Redirect("/")
+	return c.Redirect("/" + c.Query("from"))
 }
