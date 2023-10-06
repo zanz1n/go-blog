@@ -94,7 +94,6 @@ func (s *Server) ErrorHandler(c *fiber.Ctx, err error) error {
 		slog.Error("Unhandled error", "error", err)
 		e = fiber.ErrInternalServerError
 	}
-	s.handleErrorJson(c, e)
 
 	if mt == "application/json" {
 		s.handleErrorJson(c, e)
@@ -106,7 +105,7 @@ func (s *Server) ErrorHandler(c *fiber.Ctx, err error) error {
 }
 
 func (s *Server) handleHtmlError(c *fiber.Ctx, e *fiber.Error) {
-	if e.Code == 404 || e.Code == 405 {
+	if e.Code == 403 || e.Code == 404 || e.Code == 405 {
 		c.Status(404).Render("404",
 			fiberutils.CreateProps(s.pp, c, "404", struct{}{}),
 		)
@@ -132,6 +131,7 @@ func (s *Server) assetsHandler(fs http.FileSystem) func(*fiber.Ctx) error {
 		MaxAge:     3600,
 		Next: func(c *fiber.Ctx) bool {
 			if strings.HasPrefix(c.Path(), "/assets/templates") {
+				s.ErrorHandler(c, fiber.ErrNotFound)
 				return true
 			}
 
