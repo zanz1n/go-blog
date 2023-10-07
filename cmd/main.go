@@ -12,6 +12,8 @@ import (
 	"github.com/jackc/pgx/v5"
 	"github.com/zanz1n/go-htmx/internal/auth"
 	auth_handlers "github.com/zanz1n/go-htmx/internal/auth/handlers"
+	post_handlers "github.com/zanz1n/go-htmx/internal/post/handlers"
+	post_repository "github.com/zanz1n/go-htmx/internal/post/repository"
 	"github.com/zanz1n/go-htmx/internal/server"
 	"github.com/zanz1n/go-htmx/internal/sqli"
 	user_repository "github.com/zanz1n/go-htmx/internal/user/repository"
@@ -37,10 +39,12 @@ func Run() {
 
 	userRepository := user_repository.NewPostgresRepository(dba)
 	authRepository := auth.NewJwtRepository([]byte(os.Getenv("JWT_HMAC_KEY")), time.Hour)
+	postRepository := post_repository.NewPostgresRepository(dba)
 
 	s := server.NewServer(
 		os.Getenv("APP_NAME"),
 		auth_handlers.NewAuthHandlers(authRepository, userRepository),
+		post_handlers.NewPostHandlers(postRepository),
 	)
 	addr := os.Getenv("LISTEN_ADDR")
 

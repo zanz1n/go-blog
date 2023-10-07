@@ -63,4 +63,9 @@ var (
 		HttpCode: 500,
 		Message:  "Something went wrong while fetching post data, try again later",
 	}
+	ErrInvalidUUID = &StatusError{
+		Code: 40106,
+		HttpCode: 401,
+		Message: "The provided uuid is invalid",
+	}
 )

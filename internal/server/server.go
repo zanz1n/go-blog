@@ -12,12 +12,12 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/filesystem"
-	"github.com/gofiber/fiber/v2/middleware/recover"
 	"github.com/gofiber/template/handlebars/v2"
 	auth_handlers "github.com/zanz1n/go-htmx/internal/auth/handlers"
 	"github.com/zanz1n/go-htmx/internal/errors"
 	"github.com/zanz1n/go-htmx/internal/fiberutils"
 	"github.com/zanz1n/go-htmx/internal/pages"
+	post_handlers "github.com/zanz1n/go-htmx/internal/post/handlers"
 	"github.com/zanz1n/go-htmx/website"
 )
 
@@ -36,13 +36,19 @@ type Server struct {
 	app          *fiber.App
 	pp           *pages.PagePropsProvider
 	authHandlers *auth_handlers.AuthHandlers
+	postHandlers *post_handlers.PostHandlers
 }
 
-func NewServer(appName string, ah *auth_handlers.AuthHandlers) *Server {
+func NewServer(
+	appName string,
+	ah *auth_handlers.AuthHandlers,
+	ph *post_handlers.PostHandlers,
+) *Server {
 	fs := http.FS(website.EmbedAssets)
 
 	s := Server{
 		authHandlers: ah,
+		postHandlers: ph,
 		pp: &pages.PagePropsProvider{
 			AppName: appName,
 			Routes:  routes,
@@ -67,7 +73,7 @@ func NewServer(appName string, ah *auth_handlers.AuthHandlers) *Server {
 
 	s.app.Hooks().OnListen(s.OnListen)
 
-	s.app.Use(recover.New())
+	// s.app.Use(recover.New())
 	s.app.Use(fiberutils.NewLoggerMiddleware())
 	s.app.Use(cors.New())
 	s.app.Use("/assets", s.assetsHandler(fs))
@@ -82,6 +88,8 @@ func NewServer(appName string, ah *auth_handlers.AuthHandlers) *Server {
 	s.app.Post("/signup", s.HandlePostSignup)
 	s.app.Get("/logout", s.HandleLogout)
 	s.app.Post("/logout", s.HandleLogout)
+
+	s.app.Get("/post/:id", s.HandleGetPost)
 
 	return &s
 }
