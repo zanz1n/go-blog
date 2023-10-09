@@ -64,8 +64,13 @@ var (
 		Message:  "Something went wrong while fetching post data, try again later",
 	}
 	ErrInvalidUUID = &StatusError{
-		Code: 40106,
+		Code:     40106,
 		HttpCode: 401,
-		Message: "The provided uuid is invalid",
+		Message:  "The provided uuid is invalid",
+	}
+	ErrInvalidHtmlFragment = &StatusError{
+		Code:     40107,
+		HttpCode: 401,
+		Message:  "The provided html fragment is invalid",
 	}
 )
