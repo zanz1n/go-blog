@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"log/slog"
+	"strings"
 	"time"
 
 	"github.com/goccy/go-json"
@@ -16,14 +17,16 @@ import (
 	"github.com/zanz1n/go-htmx/internal/utils"
 )
 
-func NewPostgresRepository(dba sqli.Querier) PostRepository {
+func NewPostgresRepository(dba sqli.Querier, parser *HtmlParser) PostRepository {
 	return &PostPostgresRepository{
-		dba: dba,
+		dba:    dba,
+		parser: parser,
 	}
 }
 
 type PostPostgresRepository struct {
-	dba sqli.Querier
+	dba    sqli.Querier
+	parser *HtmlParser
 }
 
 func (r *PostPostgresRepository) GetById(id uuid.UUID) (*post.Post, error) {
@@ -72,18 +75,28 @@ func (r *PostPostgresRepository) GetPartialById(id uuid.UUID) (*post.PartialPost
 }
 
 func (r *PostPostgresRepository) Create(userId uuid.UUID, data *post.PostCreateData) (*post.Post, error) {
+	content, topics, err := r.parser.SanitizePostFragment(strings.NewReader(data.Content))
+	if err != nil {
+		return nil, err
+	}
+
+	topicsB, err := json.Marshal(topics)
+	if err != nil {
+		slog.Info("Post topics marshal failed", "error", err)
+	}
+
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
 	if data.Description == nil {
-		data.Description = str("")
+		data.Description = str("No description")
 	}
 
 	dbdata, err := r.dba.CreatePost(ctx, &sqli.CreatePostParams{
 		ID:          pgtype.UUID{Bytes: uuid.New(), Valid: true},
 		Title:       data.Title,
-		Content:     utils.S2B(data.Content),
-		Topics:      []byte("[]"),
+		Content:     content,
+		Topics:      topicsB,
 		Description: *data.Description,
 		ThumbImage:  pguuid(data.ThumbImage),
 		UserID:      pguuid(userId),

@@ -36,10 +36,11 @@ func Run() {
 	slog.Info("Connected to postgres", "duration", time.Since(connStart))
 
 	dba := sqli.New(conn)
+	htmlParser := post_repository.NewHtmlParser(true, true)
 
 	userRepository := user_repository.NewPostgresRepository(dba)
 	authRepository := auth.NewJwtRepository([]byte(os.Getenv("JWT_HMAC_KEY")), time.Hour)
-	postRepository := post_repository.NewPostgresRepository(dba)
+	postRepository := post_repository.NewPostgresRepository(dba, htmlParser)
 
 	s := server.NewServer(
 		os.Getenv("APP_NAME"),
