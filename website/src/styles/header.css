@@ -102,7 +102,7 @@
     }
 }
 
-@media screen and (max-width: 342px) {
+@media screen and (max-width: 384px) {
     .header-container .theme-btn {
         display: none;
     }
